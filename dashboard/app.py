@@ -77,7 +77,7 @@ t = texts[lang]
 
 @st.cache_data
 def load_data():
-    path = r"D:\SHIFA\KULIAH\SMT ONE TO EIGHT\Skripsi\codingan\dahsborad\data\dataset_dashboard.csv"
+    path = r"data/dataset_dashboard.csv"
     try:
         df = pd.read_csv(path)
         # Rename original columns to internal English key for consistency
