@@ -4,6 +4,7 @@ import folium
 from streamlit_folium import st_folium
 import plotly.express as px
 from branca.element import Template, MacroElement
+import os
 
 # ==============================
 # 0. KONFIGURASI HALAMAN & BAHASA
@@ -92,9 +93,13 @@ t = texts[lang]
 
 @st.cache_data
 def load_data():
-    path = r"data\dataset_dashboard.csv"
+    # CARA ANTI GAGAL: Mencari file di folder 'data' relatif terhadap file kodingan ini
+    base_path = os.path.dirname(
+        __file__) if "__file__" in locals() else os.getcwd()
+    file_path = os.path.join(base_path, "data", "dataset_dashboard.csv")
+    # path = r"data\dataset_dashboard.csv"
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(file_path)
         df = df.rename(columns={
             "Updated_Category": "Kategori",
             "Place Name": "Nama Usaha",
@@ -315,8 +320,7 @@ if not df.empty:
         legend = MacroElement()
         legend._template = Template(legend_html)
         m.get_root().add_child(legend)
-        warna_map = {t["high"]: "#FF8C00", t["med"]
-            : "#FFD700", t["low"]: "#808080"}
+        warna_map = {t["high"]: "#FF8C00", t["med"]                     : "#FFD700", t["low"]: "#808080"}
         for _, row in df_map.iterrows():
             folium.CircleMarker(location=[row["Latitude"], row["Longitude"]], radius=7, color=warna_map.get(row["Display_Segmen"], "blue"), fill=True, fill_opacity=0.6,
                                 popup=f"<b>{row['Lokasi']}</b><br>Segmen: {row['Display_Segmen']}<br>Total Titik: {row['Total']}").add_to(m)
