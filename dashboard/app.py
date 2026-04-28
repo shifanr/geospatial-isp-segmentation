@@ -329,7 +329,7 @@ if not df.empty:
     st.divider()
     st.subheader(t["table_header"])
     csv = df_filtered.to_csv(index=False).encode('utf-8')
-    st.download_button(f"📥 Download Data Pelanggan (CSV)", data=csv,
+    st.download_button(f"📥 Download (CSV)", data=csv,
                        file_name='data_potensi_qwords_bandung.csv', mime='text/csv')
     df_temp = df_filtered[["Nama Usaha", "Kategori",
                            "Lokasi", "Kota/Kab", "Display_Segmen"]].copy()
