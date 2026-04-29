@@ -202,12 +202,15 @@ if not df.empty:
     count_segmen.columns = ["Segmen", "Jumlah"]
 
     warna_diskrit = {t["high"]: '#FF8C00',
-                     t["med"]: '#FFD700', t["low"]: '#808080'}
+                     t["med"]: '#FFD700',
+                     t["low"]: '#808080'}
 
     with col_donut:
         st.subheader(t["chart_donut"])
         fig_donut = px.pie(count_segmen, names="Segmen", values="Jumlah", hole=0.5,
-                           color="Segmen", color_discrete_map=warna_diskrit, height=350)
+                           color="Segmen", color_discrete_map=warna_diskrit, height=350,
+                           # Tambahkan ini agar tooltip/label jadi bahasa Inggris
+                           labels={"Segmen": t["col_seg"], "Jumlah": "Total"})
         fig_donut.update_traces(textposition='inside', textinfo='percent')
         fig_donut.update_layout(showlegend=False)
         click_donut = st.plotly_chart(
@@ -226,7 +229,9 @@ if not df.empty:
     with col_segmen:
         st.subheader(t["chart_bar"])
         fig_segmen = px.bar(count_segmen, x="Segmen", y="Jumlah", color="Segmen",
-                            color_discrete_map=warna_diskrit, text_auto=True, height=350)
+                            color_discrete_map=warna_diskrit, text_auto=True, height=350,
+                            # Update label sumbu X dan Y sesuai bahasa
+                            labels={"Segmen": t["col_seg"], "Jumlah": "Total" if lang == "EN" else "Jumlah"})
         click_seg = st.plotly_chart(
             fig_segmen, on_select="rerun", selection_mode="points", use_container_width=True)
         if click_seg and "selection" in click_seg:
@@ -240,7 +245,9 @@ if not df.empty:
         top_10 = df_filtered["Kategori"].value_counts().head(10).reset_index()
         top_10.columns = ["Kategori", "Total"]
         fig_kat = px.bar(top_10, x="Kategori", y="Total", text_auto=True,
-                         height=350, color_discrete_sequence=['#3366CC'])
+                         height=350, color_discrete_sequence=['#3366CC'],
+                         # Update label sumbu X dan Y sesuai bahasa
+                         labels={"Kategori": t["col_kat"], "Total": "Total" if lang == "EN" else "Total"})
         click_kat = st.plotly_chart(
             fig_kat, on_select="rerun", selection_mode="points", use_container_width=True)
         if click_kat and "selection" in click_kat:
@@ -320,7 +327,7 @@ if not df.empty:
         legend = MacroElement()
         legend._template = Template(legend_html)
         m.get_root().add_child(legend)
-        warna_map = {t["high"]: "#FF8C00", t["med"]                     : "#FFD700", t["low"]: "#808080"}
+        warna_map = {t["high"]: "#FF8C00", t["med"]: "#FFD700", t["low"]: "#808080"}
         for _, row in df_map.iterrows():
             folium.CircleMarker(location=[row["Latitude"], row["Longitude"]], radius=7, color=warna_map.get(row["Display_Segmen"], "blue"), fill=True, fill_opacity=0.6,
                                 popup=f"<b>{row['Lokasi']}</b><br>Segmen: {row['Display_Segmen']}<br>Total Titik: {row['Total']}").add_to(m)
